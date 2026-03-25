@@ -162,11 +162,14 @@ export default function QuizPage({ params }: { params: Promise<{ tabla: string }
     }
 
     // Next question after delay
+    const newScore = correct ? score + 1 : score;
     setTimeout(() => {
       if (current + 1 >= questions.length) {
-        saveProgress();
+        saveProgress(newScore);
         setFinished(true);
       } else {
+        setConfetti(null);
+        setBonusConfetti([]);
         setCurrent((c) => c + 1);
         setSelected(null);
         setIsCorrect(null);
@@ -175,13 +178,12 @@ export default function QuizPage({ params }: { params: Promise<{ tabla: string }
     }, correct ? 1000 : 2000);
   };
 
-  const saveProgress = async () => {
+  const saveProgress = async (finalScore: number) => {
     if (isChallenge) return;
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    const errors = questions.length - (score + (isCorrect ? 1 : 0));
-    const finalScore = score + (isCorrect ? 1 : 0);
+    const errors = questions.length - finalScore;
     const stars = errors === 0 ? 3 : errors <= 2 ? 2 : 1;
 
     const { data: existing } = await supabase
@@ -231,16 +233,17 @@ export default function QuizPage({ params }: { params: Promise<{ tabla: string }
   if (questions.length === 0) return null;
 
   const q = questions[current];
-  const finalScore = score + (isCorrect === true ? 1 : 0);
+  const finalScore = score;
   const errors = questions.length - finalScore;
   const stars = errors === 0 ? 3 : errors <= 2 ? 2 : 1;
+  const hasDiamond = stars === 3 && bestStreak >= 5;
 
   // Results screen
   if (finished) {
     return (
       <div className="text-center py-8">
         <div className="text-6xl mb-4 animate-bounce-in">
-          {stars === 3 ? "🏆" : stars === 2 ? "⭐" : "👏"}
+          {hasDiamond ? "💎" : stars === 3 ? "🏆" : stars === 2 ? "⭐" : "👏"}
         </div>
         <h1 className="text-2xl font-bold text-foreground mb-2">
           {isChallenge ? "¡Desafío completado!" : `¡Tabla del ${tabla} completada!`}
@@ -252,6 +255,7 @@ export default function QuizPage({ params }: { params: Promise<{ tabla: string }
             {[1, 2, 3].map((s) => (
               <span key={s} className={`text-3xl ${s <= stars ? "" : "opacity-20"}`}>⭐</span>
             ))}
+            {hasDiamond && <span className="text-3xl animate-bounce-in">💎</span>}
           </div>
         )}
 
