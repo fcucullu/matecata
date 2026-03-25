@@ -9,6 +9,7 @@ interface LevelProgress {
   tabla: number;
   stars: number;
   best_streak: number;
+  consecutive_perfects: number;
 }
 
 const TABLAS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -48,16 +49,19 @@ export default function JugarPage() {
         {TABLAS.map((tabla) => {
           const p = progress[tabla];
           const stars = p?.stars || 0;
+          const hasDiamond = (p?.consecutive_perfects || 0) >= 5;
 
           return (
             <Link
               key={tabla}
               href={`/jugar/${tabla}`}
-              className="bg-surface rounded-2xl border border-border p-4 flex flex-col items-center gap-2 hover:border-orange/30 transition-all active:scale-95"
+              className={`bg-surface rounded-2xl border p-4 flex flex-col items-center gap-2 transition-all active:scale-95 ${
+                hasDiamond ? "border-yellow/50" : "border-border hover:border-orange/30"
+              }`}
             >
               <span className="text-3xl">{CAT_FACES[tabla - 1]}</span>
               <span className="text-lg font-bold text-foreground">×{tabla}</span>
-              <div className="flex gap-0.5">
+              <div className="flex gap-0.5 items-center">
                 {[1, 2, 3].map((s) => (
                   <Star
                     key={s}
@@ -66,6 +70,7 @@ export default function JugarPage() {
                     }`}
                   />
                 ))}
+                {hasDiamond && <span className="text-sm ml-0.5">💎</span>}
               </div>
             </Link>
           );
