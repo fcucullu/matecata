@@ -80,14 +80,23 @@ export default function QuizPage({ params }: { params: Promise<{ tabla: string }
     setQuestions(isChallenge ? generateChallengeQuestions() : generateQuestions(tabla));
   }, [tabla, isChallenge]);
 
-  // Challenge mode countdown timer
+  // Challenge mode countdown timer — only resets on new question (current changes)
+  const selectedRef = useRef<number | null>(null);
+  selectedRef.current = selected;
+
   useEffect(() => {
-    if (!isChallenge || finished || selected !== null || questions.length === 0) return;
+    if (!isChallenge || finished || questions.length === 0) return;
     setTimer(5);
+    if (timerRef.current) clearInterval(timerRef.current);
+
     timerRef.current = setInterval(() => {
+      // Don't tick if already answered
+      if (selectedRef.current !== null) {
+        clearInterval(timerRef.current!);
+        return;
+      }
       setTimer((t) => {
         if (t <= 1) {
-          // Time's up — treat as wrong
           clearInterval(timerRef.current!);
           setSelected(-1);
           setIsCorrect(false);
@@ -109,7 +118,7 @@ export default function QuizPage({ params }: { params: Promise<{ tabla: string }
       });
     }, 1000);
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  }, [current, isChallenge, finished, selected, questions.length]);
+  }, [current, isChallenge, finished, questions.length]);
 
   const handleAnswer = (option: number, e: React.MouseEvent) => {
     if (selected !== null) return;
