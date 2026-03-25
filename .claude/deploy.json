@@ -1,14 +1,13 @@
 {
-  "github_repo": "fcucullu/listly",
+  "github_repo": "fcucullu/matecata",
   "supabase_project_ref": "ytgyumihoeiwuyxbptjj",
   "supabase_url": "https://ytgyumihoeiwuyxbptjj.supabase.co",
-  "vercel_project_name": "listly",
-  "subdomain": "listly",
+  "vercel_project_name": "matecata",
+  "subdomain": "matecata",
   "domain": "franciscocucullu.com",
-  "vapid_public_key": "",
-  "portfolio_title": "Listly",
-  "portfolio_description": "Shared shopping lists for couples and friends. Add items in real-time, check them off with confetti, and share lists by email.",
-  "portfolio_body": "Listly is a PWA for sharing shopping lists with the people you care about. Create multiple lists (groceries, wish list, etc.), share them with specific people by email, and collaborate in real-time via Supabase subscriptions. Checking off items triggers a satisfying confetti animation. Built with Google OAuth, emerald green theme, and designed as a mobile-first PWA.",
+  "portfolio_title": "MateCata",
+  "portfolio_description": "Aprende las tablas de multiplicar jugando con MateCata. Un juego con gatitos, confetti y trofeos para hacer las matemáticas divertidas.",
+  "portfolio_body": "MateCata es una PWA gamificada para aprender las tablas de multiplicar del 1 al 9. Cada tabla es un nivel con 10 preguntas de opción múltiple. Un gatito emoji reacciona a cada respuesta, las rachas desbloquean confetti masivo, y hay 10 trofeos por coleccionar. Incluye modo desafío con preguntas aleatorias de todas las tablas. El progreso se guarda con Google auth.",
   "portfolio_tags": ["Next.js", "Supabase", "PWA", "TypeScript"],
-  "portfolio_img": "/assets/stock-1.jpg"
+  "portfolio_img": "/assets/app-matecata.png"
 }
