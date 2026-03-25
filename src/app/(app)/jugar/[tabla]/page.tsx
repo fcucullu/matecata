@@ -176,7 +176,7 @@ export default function QuizPage({ params }: { params: Promise<{ tabla: string }
         setIsCorrect(null);
         setCatFace(CATS.thinking);
       }
-    }, correct ? 1200 : 2200);
+    }, correct ? 1200 : 3000);
   };
 
   const saveProgress = async (finalScore: number) => {
