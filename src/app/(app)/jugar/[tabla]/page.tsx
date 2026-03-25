@@ -72,14 +72,48 @@ export default function QuizPage({ params }: { params: Promise<{ tabla: string }
   const [confetti, setConfetti] = useState<ConfettiState | null>(null);
   const [bonusConfetti, setBonusConfetti] = useState<ConfettiState[]>([]);
   const [finished, setFinished] = useState(false);
+  const [timer, setTimer] = useState(5);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const confettiKey = useRef(0);
 
   useEffect(() => {
     setQuestions(isChallenge ? generateChallengeQuestions() : generateQuestions(tabla));
   }, [tabla, isChallenge]);
 
+  // Challenge mode countdown timer
+  useEffect(() => {
+    if (!isChallenge || finished || selected !== null || questions.length === 0) return;
+    setTimer(5);
+    timerRef.current = setInterval(() => {
+      setTimer((t) => {
+        if (t <= 1) {
+          // Time's up — treat as wrong
+          clearInterval(timerRef.current!);
+          setSelected(-1);
+          setIsCorrect(false);
+          setCatFace(CATS.wrong);
+          setStreak(0);
+          setTimeout(() => {
+            if (current + 1 >= questions.length) {
+              setFinished(true);
+            } else {
+              setCurrent((c) => c + 1);
+              setSelected(null);
+              setIsCorrect(null);
+              setCatFace(CATS.thinking);
+            }
+          }, 1500);
+          return 0;
+        }
+        return t - 1;
+      });
+    }, 1000);
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [current, isChallenge, finished, selected, questions.length]);
+
   const handleAnswer = (option: number, e: React.MouseEvent) => {
     if (selected !== null) return;
+    if (timerRef.current) clearInterval(timerRef.current);
     setSelected(option);
     const correct = option === questions[current].answer;
     setIsCorrect(correct);
@@ -256,6 +290,13 @@ export default function QuizPage({ params }: { params: Promise<{ tabla: string }
           style={{ width: `${((current) / questions.length) * 100}%` }}
         />
       </div>
+
+      {/* Timer (challenge mode) */}
+      {isChallenge && selected === null && (
+        <div className={`text-3xl font-bold mb-2 ${timer <= 2 ? "text-red-500 animate-bounce-in" : "text-orange"}`}>
+          ⏱️ {timer}
+        </div>
+      )}
 
       {/* Streak */}
       {streak > 0 && (
