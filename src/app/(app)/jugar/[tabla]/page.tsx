@@ -72,6 +72,7 @@ export default function QuizPage({ params }: { params: Promise<{ tabla: string }
   const [confetti, setConfetti] = useState<ConfettiState | null>(null);
   const [bonusConfetti, setBonusConfetti] = useState<ConfettiState[]>([]);
   const [finished, setFinished] = useState(false);
+  const [hasDiamond, setHasDiamond] = useState(false);
   const [timer, setTimer] = useState(5);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const confettiKey = useRef(0);
@@ -188,24 +189,30 @@ export default function QuizPage({ params }: { params: Promise<{ tabla: string }
 
     const { data: existing } = await supabase
       .from("matecata_progress")
-      .select("stars")
+      .select("stars, consecutive_perfects, times_played")
       .eq("user_id", user.id)
       .eq("tabla", tabla)
       .single();
 
     const newStars = Math.max(stars, existing?.stars || 0);
+    const prevConsecutive = (existing as any)?.consecutive_perfects || 0;
+    const newConsecutive = stars === 3 ? prevConsecutive + 1 : 0;
 
     await supabase.from("matecata_progress").upsert(
       {
         user_id: user.id,
         tabla,
         stars: newStars,
-        best_streak: Math.max(bestStreak, streak + (isCorrect ? 1 : 0)),
+        best_streak: Math.max(bestStreak, streak),
         last_score: finalScore,
         times_played: (existing as any)?.times_played ? (existing as any).times_played + 1 : 1,
+        consecutive_perfects: newConsecutive,
       },
       { onConflict: "user_id,tabla" }
     );
+
+    // Diamond if 5 consecutive perfects
+    if (newConsecutive >= 5) setHasDiamond(true);
 
     // Fire celebration if perfect
     if (errors === 0) {
@@ -236,7 +243,6 @@ export default function QuizPage({ params }: { params: Promise<{ tabla: string }
   const finalScore = score;
   const errors = questions.length - finalScore;
   const stars = errors === 0 ? 3 : errors <= 2 ? 2 : 1;
-  const hasDiamond = stars === 3 && bestStreak >= 5;
 
   // Results screen
   if (finished) {
@@ -274,6 +280,7 @@ export default function QuizPage({ params }: { params: Promise<{ tabla: string }
               setSelected(null);
               setIsCorrect(null);
               setCatFace(CATS.thinking);
+              setHasDiamond(false);
               setFinished(false);
             }}
             className="w-full bg-orange text-black font-bold py-3 rounded-xl text-lg"
