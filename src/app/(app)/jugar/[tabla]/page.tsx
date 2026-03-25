@@ -300,13 +300,6 @@ export default function QuizPage({ params }: { params: Promise<{ tabla: string }
         />
       </div>
 
-      {/* Timer (challenge mode) */}
-      {isChallenge && selected === null && (
-        <div className={`text-3xl font-bold mb-2 ${timer <= 2 ? "text-red-500 animate-bounce-in" : "text-orange"}`}>
-          ⏱️ {timer}
-        </div>
-      )}
-
       {/* Streak */}
       {streak > 0 && (
         <div className="text-sm font-medium text-orange mb-2 animate-bounce-in">
@@ -360,6 +353,13 @@ export default function QuizPage({ params }: { params: Promise<{ tabla: string }
       <p className="mt-6 text-xs text-muted">
         Pregunta {current + 1} de {questions.length} · {score} correctas
       </p>
+
+      {/* Timer (challenge mode) */}
+      {isChallenge && selected === null && (
+        <div className={`mt-3 text-3xl font-bold ${timer <= 2 ? "text-red-500 animate-bounce-in" : "text-orange"}`}>
+          ⏱️ {timer}
+        </div>
+      )}
 
       {confetti && <ConfettiBurst key={confetti.key} x={confetti.x} y={confetti.y} onDone={() => setConfetti(null)} />}
       {bonusConfetti.map((c) => <ConfettiBurst key={c.key} x={c.x} y={c.y} onDone={() => setBonusConfetti((prev) => prev.filter((b) => b.key !== c.key))} />)}
