@@ -212,7 +212,7 @@ export default function QuizPage({ params }: { params: Promise<{ tabla: string }
     );
 
     // Diamond if 5 consecutive perfects
-    if (newConsecutive >= 5) setHasDiamond(true);
+    if (newConsecutive >= 3) setHasDiamond(true);
 
     // Fire celebration if perfect
     if (errors === 0) {

@@ -49,7 +49,7 @@ export default function JugarPage() {
         {TABLAS.map((tabla) => {
           const p = progress[tabla];
           const stars = p?.stars || 0;
-          const hasDiamond = (p?.consecutive_perfects || 0) >= 5;
+          const hasDiamond = (p?.consecutive_perfects || 0) >= 3;
 
           return (
             <Link
