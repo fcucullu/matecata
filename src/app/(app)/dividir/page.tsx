@@ -30,7 +30,8 @@ export default function JugarPage() {
     const { data } = await supabase
       .from("matecata_progress")
       .select("*")
-      .eq("user_id", user.id);
+      .eq("user_id", user.id)
+      .eq("mode", "divide");
 
     const map: Record<number, LevelProgress> = {};
     data?.forEach((p) => { map[p.tabla] = p; });
@@ -42,7 +43,7 @@ export default function JugarPage() {
       <div className="text-center mb-8">
         <div className="text-5xl mb-2 animate-jump">😸</div>
         <h1 className="text-3xl font-bold orange-shimmer mb-1">MateCata</h1>
-        <p className="text-sm text-muted">¡Elige una tabla para practicar!</p>
+        <p className="text-sm text-muted">¡Elige una tabla para practicar división!</p>
       </div>
 
       <div className="grid grid-cols-3 gap-3">
@@ -54,13 +55,13 @@ export default function JugarPage() {
           return (
             <Link
               key={tabla}
-              href={`/jugar/${tabla}`}
+              href={`/dividir/${tabla}`}
               className={`bg-surface rounded-2xl border p-4 flex flex-col items-center gap-2 transition-all active:scale-95 ${
                 hasDiamond ? "border-yellow/50" : "border-border hover:border-orange/30"
               }`}
             >
               <span className="text-3xl">{CAT_FACES[tabla - 1]}</span>
-              <span className="text-lg font-bold text-foreground">×{tabla}</span>
+              <span className="text-lg font-bold text-foreground">÷{tabla}</span>
               <div className="flex gap-0.5 items-center">
                 {[1, 2, 3].map((s) => (
                   <Star
@@ -79,7 +80,7 @@ export default function JugarPage() {
 
       {/* Challenge mode */}
       <Link
-        href="/jugar/desafio"
+        href="/dividir/desafio"
         className="block mt-6 bg-orange/10 border border-orange/30 rounded-2xl p-4 text-center hover:bg-orange/20 transition-colors"
       >
         <span className="text-2xl block mb-1">🎯</span>

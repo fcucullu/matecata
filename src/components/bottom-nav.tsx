@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Gamepad2, Trophy, Rocket } from "lucide-react";
+import { X, Divide, Trophy, Rocket } from "lucide-react";
 
 const navItems = [
-  { href: "/jugar", icon: Gamepad2, label: "Jugar" },
+  { href: "/multiplicar", icon: X, label: "Multiplicar" },
+  { href: "/dividir", icon: Divide, label: "Dividir" },
   { href: "/trofeos", icon: Trophy, label: "Trofeos" },
   { href: "/apps", icon: Rocket, label: "Apps" },
 ];

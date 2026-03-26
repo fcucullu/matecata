@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "MateCata",
     short_name: "MateCata",
     description: "Aprende las tablas de multiplicar jugando",
-    start_url: "/jugar",
+    start_url: "/multiplicar",
     display: "standalone",
     background_color: "#0a0a0a",
     theme_color: "#F97316",

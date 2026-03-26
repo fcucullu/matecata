@@ -14,24 +14,26 @@ interface Question {
 
 interface ConfettiState { key: number; x: number; y: number }
 
+// Division: tabla÷b = answer → e.g. for tabla=3: 6÷3=2, 15÷3=5, etc.
 function generateQuestions(tabla: number): Question[] {
   const questions: Question[] = [];
   const nums = Array.from({ length: 10 }, (_, i) => i + 1);
-  // Shuffle
   for (let i = nums.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [nums[i], nums[j]] = [nums[j], nums[i]];
   }
 
   for (const b of nums) {
-    const answer = tabla * b;
+    // dividend = tabla * b, answer = b (so dividend ÷ tabla = b, always integer)
+    const dividend = tabla * b;
+    const answer = b;
     const options = new Set<number>([answer]);
     while (options.size < 4) {
-      const wrong = tabla * (Math.floor(Math.random() * 10) + 1) + (Math.floor(Math.random() * 5) - 2);
-      if (wrong > 0 && wrong !== answer) options.add(wrong);
+      const wrong = Math.floor(Math.random() * 10) + 1;
+      if (wrong !== answer) options.add(wrong);
     }
     const shuffled = [...options].sort(() => Math.random() - 0.5);
-    questions.push({ a: tabla, b, answer, options: shuffled });
+    questions.push({ a: dividend, b: tabla, answer, options: shuffled });
   }
   return questions;
 }
@@ -39,15 +41,15 @@ function generateQuestions(tabla: number): Question[] {
 function generateChallengeQuestions(): Question[] {
   const questions: Question[] = [];
   for (let i = 0; i < 20; i++) {
-    const a = Math.floor(Math.random() * 9) + 1;
-    const b = Math.floor(Math.random() * 10) + 1;
-    const answer = a * b;
+    const divisor = Math.floor(Math.random() * 9) + 1;
+    const answer = Math.floor(Math.random() * 10) + 1;
+    const dividend = divisor * answer;
     const options = new Set<number>([answer]);
     while (options.size < 4) {
-      const wrong = (Math.floor(Math.random() * 9) + 1) * (Math.floor(Math.random() * 10) + 1);
+      const wrong = Math.floor(Math.random() * 10) + 1;
       if (wrong !== answer) options.add(wrong);
     }
-    questions.push({ a, b, answer, options: [...options].sort(() => Math.random() - 0.5) });
+    questions.push({ a: dividend, b: divisor, answer, options: [...options].sort(() => Math.random() - 0.5) });
   }
   return questions;
 }
@@ -192,6 +194,7 @@ export default function QuizPage({ params }: { params: Promise<{ tabla: string }
       .select("stars, consecutive_perfects, times_played")
       .eq("user_id", user.id)
       .eq("tabla", tabla)
+      .eq("mode", "divide")
       .single();
 
     const newStars = Math.max(stars, existing?.stars || 0);
@@ -202,13 +205,14 @@ export default function QuizPage({ params }: { params: Promise<{ tabla: string }
       {
         user_id: user.id,
         tabla,
+        mode: "divide",
         stars: newStars,
         best_streak: Math.max(bestStreak, streak),
         last_score: finalScore,
         times_played: (existing as any)?.times_played ? (existing as any).times_played + 1 : 1,
         consecutive_perfects: newConsecutive,
       },
-      { onConflict: "user_id,tabla" }
+      { onConflict: "user_id,tabla,mode" }
     );
 
     // Diamond if 5 consecutive perfects
@@ -252,7 +256,7 @@ export default function QuizPage({ params }: { params: Promise<{ tabla: string }
           {hasDiamond ? "💎" : stars === 3 ? "🏆" : stars === 2 ? "⭐" : "👏"}
         </div>
         <h1 className="text-2xl font-bold text-foreground mb-2">
-          {isChallenge ? "¡Desafío completado!" : `¡Tabla del ${tabla} completada!`}
+          {isChallenge ? "¡Desafío completado!" : `¡División por ${tabla} completada!`}
         </h1>
         <p className="text-4xl font-bold orange-shimmer mb-4">{finalScore}/{questions.length}</p>
 
@@ -288,7 +292,7 @@ export default function QuizPage({ params }: { params: Promise<{ tabla: string }
             ¡Jugar de nuevo!
           </button>
           <button
-            onClick={() => router.push("/jugar")}
+            onClick={() => router.push("/multiplicar")}
             className="w-full bg-surface border border-border text-foreground font-medium py-3 rounded-xl"
           >
             Volver al menú
@@ -326,7 +330,7 @@ export default function QuizPage({ params }: { params: Promise<{ tabla: string }
       {/* Question */}
       <div className="text-center mb-8">
         <p className="text-5xl font-bold text-foreground mb-2">
-          {q.a} × {q.b}
+          {q.a} ÷ {q.b}
         </p>
         <p className="text-xl text-muted">= ?</p>
       </div>
