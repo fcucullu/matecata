@@ -43,7 +43,7 @@ export default function JugarPage() {
       <div className="text-center mb-8">
         <div className="text-5xl mb-2 animate-jump">😸</div>
         <h1 className="text-3xl font-bold orange-shimmer mb-1">MateCata</h1>
-        <p className="text-sm text-muted">¡Elige una tabla para practicar!</p>
+        <p className="text-sm text-muted">¡Elige una tabla para practicar multiplicación!</p>
       </div>
 
       <div className="grid grid-cols-3 gap-3">
