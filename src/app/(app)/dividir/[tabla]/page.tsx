@@ -292,7 +292,7 @@ export default function QuizPage({ params }: { params: Promise<{ tabla: string }
             ¡Jugar de nuevo!
           </button>
           <button
-            onClick={() => router.push("/multiplicar")}
+            onClick={() => router.push("/dividir")}
             className="w-full bg-surface border border-border text-foreground font-medium py-3 rounded-xl"
           >
             Volver al menú
