@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { Star } from "lucide-react";
+import { InstallPrompt } from "@/components/install-prompt";
 
 interface LevelProgress {
   tabla: number;
@@ -40,6 +41,7 @@ export default function JugarPage() {
 
   return (
     <div>
+      <InstallPrompt />
       <div className="text-center mb-8">
         <div className="text-5xl mb-2 animate-jump">😸</div>
         <h1 className="text-3xl font-bold orange-shimmer mb-1">MateCata</h1>
