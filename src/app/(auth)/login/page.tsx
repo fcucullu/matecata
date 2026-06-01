@@ -1,6 +1,7 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
+import { InstallPrompt } from "@/components/install-prompt";
 
 export default function LoginPage() {
   const supabase = createClient();
@@ -34,6 +35,10 @@ export default function LoginPage() {
         </svg>
         Entrar con Google
       </button>
+
+      <div className="w-full max-w-sm mt-10">
+        <InstallPrompt />
+      </div>
     </div>
   );
 }
